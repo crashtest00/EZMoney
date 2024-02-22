@@ -3,7 +3,7 @@ echo "Gathering you ip for dev container"
 
 ##############################################################################################
 # en (Ethernet) - ib (InfiniBand) - sl (Serial line IP (slip)) - wl (Wireless local area 
-network (WLAN)) - ww (Wireless wide area network (WWAN))
+# network (WLAN)) - ww (Wireless wide area network (WWAN))
 #############################################################################################
 your_interface_name="eno" 
 interface_prefix="en" # Choose the interface network.
