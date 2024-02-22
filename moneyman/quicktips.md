@@ -1,0 +1,1 @@
+1. Make sure to always run npm install after git pull to make sure all necessary packages are installed.
