@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Appbar, Provider as PaperProvider, Card, Paragraph } from 'react-native-paper';
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button } from 'react-native-paper';
 
 // Import your SettingsScreen component
 import Settings from './Settings'; // Adjust the import path as necessary
 
 function HomeScreen({ navigation }) {
-  // Your existing logic here
   const totalBudget = 1000; // Example budget
-  const amountSpent = 1500; // Example amount spent
+  const [amountSpent, setAmountSpent] = useState(0); // Example amount spent
   const billingPeriodStart = new Date('2024-02-01'); // Start of billing period
   const billingPeriodEnd = new Date('2024-02-28'); // End of billing period
   const today = new Date(); // Current date
@@ -30,6 +29,13 @@ function HomeScreen({ navigation }) {
           <Paragraph>Billing Period Elapsed: {billingPeriodElapsedPercentage}%</Paragraph>
         </Card.Content>
       </Card>
+      <TextInput
+        label="Amount Spent"
+        value={amountSpent.toString()}
+        onChangeText={text => setAmountSpent(parseFloat(text))}
+        keyboardType="numeric"
+      />
+      <Button onPress={() => console.log("Amount Spent:", amountSpent)}>Update</Button>
       <StatusBar style="auto" />
       <Appbar.Header>
         <Appbar.Content title="Home" />
