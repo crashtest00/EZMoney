@@ -18,8 +18,14 @@ function HomeScreen({ navigation }) {
   const billingPeriodLength = (billingPeriodEnd - billingPeriodStart) / (1000 * 60 * 60 * 24);
   const daysElapsed = (today - billingPeriodStart) / (1000 * 60 * 60 * 24);
   const billingPeriodElapsedPercentage = ((daysElapsed / billingPeriodLength) * 100).toFixed(2);
-  const budgetSpentPercentage = ((amountSpent / totalBudget) * 100).toFixed(2);
+  const [budgetSpentPercentage, setBudgetSpentPercentage] = useState(0); // Initial value
 
+  const calculateSpentPercent = () => {
+    // Calculate the percentage of the budgent that has been spent in the current billing period
+    const newBudgetSpentPercentage = ((amountSpent / totalBudget) * 100).toFixed(2);
+    setBudgetSpentPercentage(newBudgetSpentPercentage);
+  };
+;
   return (
     <View style={styles.container}>
       <Card style={styles.card}>
@@ -30,12 +36,15 @@ function HomeScreen({ navigation }) {
         </Card.Content>
       </Card>
       <TextInput
+        placeholder="Enter amount spent" // Initial text in field
         label="Amount Spent"
-        value={amountSpent.toString()}
-        onChangeText={text => setAmountSpent(parseFloat(text))}
         keyboardType="numeric"
+        mode="outlined"
+        onChangeText={text => setAmountSpent(parseFloat(text))}
       />
-      <Button onPress={() => console.log("Amount Spent:", amountSpent)}>Update</Button>
+      <Button onPress={() => calculateSpentPercent()} icon="abacus">
+        Calculate
+      </Button>
       <StatusBar style="auto" />
       <Appbar.Header>
         <Appbar.Content title="Home" />
