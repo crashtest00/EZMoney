@@ -11,8 +11,6 @@ import Settings from './Settings'; // Adjust the import path as necessary
 
 function HomeScreen({ navigation }) {
   const [totalBudget, setTotalBudget] = useState(0); // Default to 0
-  const [amountSpent, setAmountSpent] = useState(0); // Default to 0
-  const [amountSpentInput, setAmountSpentInput] = useState(''); // Temporary input state
   const today = new Date();
   const [billingPeriodStart, setBillingPeriodStart] = useState(today); // Default to today
   const [billingPeriodEnd, setBillingPeriodEnd] = useState(today); // Default to today
@@ -50,10 +48,19 @@ function HomeScreen({ navigation }) {
   const billingPeriodLength = (billingPeriodEnd - billingPeriodStart) / (1000 * 60 * 60 * 24);
   const daysElapsed = (today - billingPeriodStart) / (1000 * 60 * 60 * 24);
   const billingPeriodElapsedPercentage = ((daysElapsed / billingPeriodLength) * 100).toFixed(2);
-  const budgetSpentPercentage = ((amountSpent / totalBudget) * 100).toFixed(2);
+  
+  // Handle Spent Amount
+  const [budgetSpentPercentage, setBudgetSpentPercentage] = useState(0); // Initial value
+  const [amountSpent, setAmountSpent] = useState(0); // Default to 0
 
+  const [amountSpentInput, setAmountSpentInput] = useState(''); // Temporary input state
   const updateAmountSpent = () => {
     setAmountSpent(parseFloat(amountSpentInput) || 0); // Only update amountSpent on button press
+  };
+  const calculateSpentPercent = () => {
+    // Calculate the percentage of the budgent that has been spent in the current billing period
+    const newBudgetSpentPercentage = ((amountSpent / totalBudget) * 100).toFixed(2);
+    setBudgetSpentPercentage(newBudgetSpentPercentage);
   };
 
   return (
@@ -71,13 +78,16 @@ function HomeScreen({ navigation }) {
           </Card.Content>
         </Card>
         <TextInput
+          placeholder="Enter amount spent" // Initial text in field
           label="Amount Spent"
-          value={amountSpentInput}
-          onChangeText={setAmountSpentInput}
           keyboardType="numeric"
-          style={styles.textInput}
+          mode="outlined"
+          onChangeText={text => setAmountSpent(parseFloat(text))}
         />
         <Button mode="contained" onPress={updateAmountSpent} style={styles.button}>Update</Button>
+        <Button onPress={() => calculateSpentPercent()} icon="abacus">
+          Calculate
+        </Button>
         <StatusBar style="auto" />
       </View>
     </View>
