@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button } from 'react-native-paper';
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Icon} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Import your SettingsScreen component
@@ -87,7 +87,14 @@ function HomeScreen({ navigation }) {
             mode="outlined"
             onChangeText={text => setAmountSpent(text)}
           />
-          <Button onPress={() => calculateSpentPercent()} icon="abacus">
+          <Button
+            mode='contained'
+            labelStyle={{
+              fontSize: 20,
+            }}
+            onPress={() => calculateSpentPercent()} 
+            icon="abacus"
+          >
             Calculate
           </Button>
           <StatusBar style="auto" />
@@ -95,7 +102,7 @@ function HomeScreen({ navigation }) {
       </View>
     </TouchableWithoutFeedback>
   );
-}
+};
 
 const Stack = createNativeStackNavigator();
 
@@ -123,9 +130,6 @@ const styles = StyleSheet.create({
     width: '50%', // Adjusted to fill container width more appropriately
     marginTop: 30,
     marginBottom: 20,
-  },
-  button: {
-    // Additional styling can be added here if needed
   },
 });
 
