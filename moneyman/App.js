@@ -29,6 +29,7 @@ function HomeScreen({ navigation }) {
     // Calculate the percentage of the budget that has been spent in the current billing period
     const newBudgetSpentPercentage = ((parseFloat(amountSpent) / totalBudget) * 100).toFixed(2);
     setBudgetSpentPercentage(newBudgetSpentPercentage);
+    setAmountSpent('');
   };
 
   // Copy to clipboard
