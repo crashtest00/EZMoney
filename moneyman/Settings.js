@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Ensure useEffect is imported
-import { View, StyleSheet, Button } from 'react-native';
+import { View, StyleSheet, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput, Provider as PaperProvider, IconButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -71,43 +71,45 @@ const SettingsScreen = () => {
 
   return (
     <PaperProvider>
-      <View style={styles.container}>
-        <TextInput
-          label="Budget Default"
-          value={budgetDefault}
-          onChangeText={setBudgetDefault}
-          keyboardType="numeric"
-          style={styles.textInput}
-        />
-        <TextInput
-          label="Current Month Budget"
-          value={currentMonthBudget}
-          onChangeText={setCurrentMonthBudget}
-          keyboardType="numeric"
-          style={styles.textInput}
-        />
-        <View style={styles.datePickerContainer}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.container}>
           <TextInput
-            label="Cycle Start"
-            value={billingCycleStartDateString}
-            onChangeText={text => setBillingCycleStartDateString(text)}
+            label="Budget Default"
+            value={budgetDefault}
+            onChangeText={setBudgetDefault}
+            keyboardType="numeric"
             style={styles.textInput}
           />
-          <IconButton
-            icon="calendar"
-            onPress={() => setShowDatePicker(true)}
+          <TextInput
+            label="Current Month Budget"
+            value={currentMonthBudget}
+            onChangeText={setCurrentMonthBudget}
+            keyboardType="numeric"
+            style={styles.textInput}
           />
+          <View style={styles.datePickerContainer}>
+            <TextInput
+              label="Cycle Start"
+              value={billingCycleStartDateString}
+              onChangeText={text => setBillingCycleStartDateString(text)}
+              style={styles.textInput}
+            />
+            <IconButton
+              icon="calendar"
+              onPress={() => setShowDatePicker(true)}
+            />
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              value={billingCycleStartDate}
+              mode="date"
+              display="default"
+              onChange={onChangeDate}
+            />
+          )}
+          <Button title="Save Settings" onPress={saveSettings} />
         </View>
-        {showDatePicker && (
-          <DateTimePicker
-            value={billingCycleStartDate}
-            mode="date"
-            display="default"
-            onChange={onChangeDate}
-          />
-        )}
-        <Button title="Save Settings" onPress={saveSettings} />
-      </View>
+      </TouchableWithoutFeedback> 
     </PaperProvider>
   );
 };

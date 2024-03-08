@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button } from 'react-native-paper';
@@ -65,32 +65,35 @@ function HomeScreen({ navigation }) {
   );
 
   return (
-    <View style={{ flex: 1 }}> 
-      <Appbar.Header>
-        <Appbar.Content title="Money Manager" />
-        <Appbar.Action icon="cog" onPress={() => navigation.navigate('Settings')} />
-      </Appbar.Header>
-      <View style={styles.container}>
-        <Card style={styles.card}>
-          <Card.Title title="Budget Overview" />
-          <Card.Content>
-            <Paragraph>Budget Spent: {budgetSpentPercentage}%</Paragraph>
-            <Paragraph>Billing Period Elapsed: {billingPeriodElapsedPercentage}%</Paragraph>
-          </Card.Content>
-        </Card>
-        <TextInput
-          value={amountSpent}
-          label="Amount Spent"
-          keyboardType="numeric"
-          mode="outlined"
-          onChangeText={text => setAmountSpent(text)}
-        />
-        <Button onPress={() => calculateSpentPercent()} icon="abacus">
-          Calculate
-        </Button>
-        <StatusBar style="auto" />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={{ flex: 1 }}> 
+        <Appbar.Header>
+          <Appbar.Content title="Money Manager" />
+          <Appbar.Action icon="cog" onPress={() => navigation.navigate('Settings')} />
+        </Appbar.Header>
+        <View style={styles.container}>
+          <Card style={styles.card}>
+            <Card.Title title="Budget Overview" />
+            <Card.Content>
+              <Paragraph>Budget Spent: {budgetSpentPercentage}%</Paragraph>
+              <Paragraph>Billing Period Elapsed: {billingPeriodElapsedPercentage}%</Paragraph>
+            </Card.Content>
+          </Card>
+          <TextInput 
+            style={styles.textInput}
+            value={amountSpent}
+            label="Enter Amount Spent"
+            keyboardType="numeric"
+            mode="outlined"
+            onChangeText={text => setAmountSpent(text)}
+          />
+          <Button onPress={() => calculateSpentPercent()} icon="abacus">
+            Calculate
+          </Button>
+          <StatusBar style="auto" />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
