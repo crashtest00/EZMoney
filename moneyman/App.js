@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
-import { NavigationContainer, useFocusEffect, useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Snackbar, Icon} from 'react-native-paper';
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Snackbar} from 'react-native-paper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,24 +26,12 @@ function HomeScreen({ navigation }) {
   const [amountSpent, setAmountSpent] = useState('');
 
   const calculateSpentPercent = () => {
-    // Calculate the percentage of the budgent that has been spent in the current billing period
-    // Add logic to handle null
+    // Calculate the percentage of the budget that has been spent in the current billing period
     const newBudgetSpentPercentage = ((parseFloat(amountSpent) / totalBudget) * 100).toFixed(2);
     setBudgetSpentPercentage(newBudgetSpentPercentage);
   };
 
-  const loadSettings = async () => {
-    try {
-      const savedTotalBudget = await AsyncStorage.getItem('currentMonthBudget');
-      if (savedTotalBudget !== null) {
-        setTotalBudget(parseFloat(savedTotalBudget));
-      }
-      const savedBillingPeriodStart = await AsyncStorage.getItem('billingCycleStartDate');
-      const savedBillingPeriodEnd = await AsyncStorage.getItem('billingCycleEndDate');
-
-      if (savedTotalBudget !== null) {
-        setTotalBudget(parseFloat(savedTotalBudget));
-      }
+  // Copy to clipboard
   const [visible, setVisible] = useState(false); // State to control Snackbar visibility
   const content = "This is the content I want to copy.";
 
