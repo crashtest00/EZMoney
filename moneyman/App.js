@@ -4,7 +4,7 @@ import { StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-nati
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Snackbar} from 'react-native-paper';
-import Clipboard from '@react-native-clipboard/clipboard';
+import * as Clipboard from 'expo-clipboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Import your SettingsScreen component
@@ -33,11 +33,11 @@ function HomeScreen({ navigation }) {
 
   // Copy to clipboard
   const [visible, setVisible] = useState(false); // State to control Snackbar visibility
-  const content = "This is the content I want to copy.";
-
-  const copyToClipboard = () => {
-    Clipboard.setString(content);
-    setVisible(true); // Show the Snackbar after copying
+  const copyToClipboard = async () => {
+    const textToCopy = `Budget Spent: ${budgetSpentPercentage}%\n` +
+                       `Billing Period Elapsed: ${billingPeriodElapsedPercentage}%`;
+    await Clipboard.setStringAsync(textToCopy);
+    setVisible(true);
   };
 
   const onDismissSnackBar = () => setVisible(false); // Hide Snackbar
@@ -106,16 +106,15 @@ function HomeScreen({ navigation }) {
           >
             Calculate
           </Button>
-          <Button mode="contained" onPress={clearData} style={[styles.button, styles.clearButton]}>Clear Data</Button>
         <StatusBar style="auto" />
         </View>
         <Snackbar
         visible={visible}
         onDismiss={onDismissSnackBar}
         duration={3000} // Duration the Snackbar stays visible
-      >
+        >
         Content copied to clipboard!
-      </Snackbar>
+        </Snackbar>
     </View>
     </TouchableWithoutFeedback>
   );
