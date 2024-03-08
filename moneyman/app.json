@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "moneyman",
-    "slug": "moneyman",
+    "slug": "moneymanager",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.crashtest00.moneymanager"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a6b8fe61-167c-4ca9-a3c2-b66bd8d2d255"
+      }
+    },
+    "owner": "crashtest00"
   }
 }
