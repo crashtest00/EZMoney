@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import {StatusBar } from 'expo-status-bar'
 import { View, Text, TouchableWithoutFeedback, Keyboard, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { Appbar, Card, Paragraph, TextInput, Button, Icon } from 'react-native-paper';
+import { Appbar, Card, Paragraph, Button, TextInput} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function HomeScreen({ navigation }) {
@@ -62,7 +62,7 @@ function HomeScreen({ navigation }) {
   
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.container}> 
+        <View style={{ flex: 1 }}> 
           <Appbar.Header>
             <Appbar.Content title="Money Manager" />
             <Appbar.Action icon="cog" onPress={() => navigation.navigate('Settings')} />
@@ -99,6 +99,11 @@ function HomeScreen({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+  textInput: {
+    width: '50%',
+    marginTop: 30,
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
     backgroundColor:    '#fff',
@@ -106,11 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   
-  textInput: {
-    width: '50%',
-    marginTop: '30',
-    marginBottom: '20',
-  }
+  
 });
 
 export default HomeScreen;
