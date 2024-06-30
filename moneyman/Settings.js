@@ -3,6 +3,7 @@ import { View, StyleSheet, Button, TouchableWithoutFeedback, Keyboard } from 're
 import { TextInput, Provider as PaperProvider, IconButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import styles from './SettingsStyle.js';
 
 const SettingsScreen = () => {
   const [budgetDefault, setBudgetDefault] = useState('');
@@ -114,19 +115,5 @@ const SettingsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  textInput: {
-    marginBottom: 10,
-  },
-  datePickerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    width: '100%',
-  },
-});
 
 export default SettingsScreen;
