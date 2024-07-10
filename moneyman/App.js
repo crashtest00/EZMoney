@@ -7,8 +7,9 @@ import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AppStyle.js';
 
-// Import your SettingsScreen component
-import Settings from './Settings'; // Adjust the import path as necessary
+// Import other screens
+import Settings from './Settings'; 
+import FinanceTrivia from './FinanceTrivia.js';
 
 function HomeScreen({ navigation }) {
   const [totalBudget, setTotalBudget] = useState(0); // Default to 0
@@ -98,6 +99,16 @@ function HomeScreen({ navigation }) {
           >
             Calculate
           </Button>
+          <Button
+            style={{marginTop: 20}} // this style should move elsewhere
+            mode='contained'
+            labelStyle={{
+              fontSize: 20,
+            }}
+            onPress={() => navigation.navigate('FinanceTrivia')}
+            icon='trending-up'
+          >
+          </Button>
           <StatusBar style="auto" />
         </View>
       </View>
@@ -114,6 +125,7 @@ function App() {
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name='FinanceTrivia' component={FinanceTrivia} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
