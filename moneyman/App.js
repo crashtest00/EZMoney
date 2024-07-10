@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Icon} from 'react-native-paper';
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AppStyle.js';
 
@@ -98,9 +98,9 @@ function HomeScreen({ navigation }) {
             icon="abacus"
           >
             Calculate
-          </Button>
-          <Button
-            style={{marginTop: 20}} // this style should move elsewhere
+          </Button>        
+          <Button // perhaps move this button to the bottom of the home screen to separate it from the actual app content
+            style={{marginTop: 20}} // this style should move elsewhere...
             mode='contained'
             labelStyle={{
               fontSize: 20,
@@ -108,6 +108,7 @@ function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate('FinanceTrivia')}
             icon='trending-up'
           >
+            Finance trivia
           </Button>
           <StatusBar style="auto" />
         </View>
