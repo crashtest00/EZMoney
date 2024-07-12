@@ -1,5 +1,5 @@
 import React from 'react';
-import financeTrivia from './FinanceTriviaRequests.js';
+import { fetchTrivia } from './FinanceTriviaRequests.js';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 
@@ -7,11 +7,11 @@ const FinanceTrivia = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>You will hear a buzzer. When you hear the buzzer, press the button below.</Text>
+      <Text style={styles.text}>Press the button below to fetch some neat facts</Text>
       <Button
       mode='contained'
-      onPress={() => console.log('You haven\'t heard the buzzer yet...')}>
-        Do something interesting, no doubt
+      onPress={() => fetchTrivia("Please give me some finance trivia while I wait for this intern to improve this prompt")}>
+        neat fact fetching button
       </Button>
     </View>
   );
