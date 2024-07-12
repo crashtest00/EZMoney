@@ -114,7 +114,6 @@ const SettingsScreen = () => {
           >
             Save Settings
           </Button>
-          <Button title="Save Settings" onPress={saveSettings} />
         </View>
       </TouchableWithoutFeedback> 
     </PaperProvider>
