@@ -1,4 +1,4 @@
-import Config from 'react-native-config';
+import Config from 'react-native-config'; //does not work; `Config' is always blank. 
 
 async function fetchTrivia(prompt) {
     const apiKey = Config.OPENAI_API_KEY;
