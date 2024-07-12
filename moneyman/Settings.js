@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // Ensure useEffect is imported
-import { View, StyleSheet, Button, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { TextInput, Provider as PaperProvider, IconButton } from 'react-native-paper';
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { TextInput, Provider as PaperProvider, IconButton, Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './SettingsStyle.js';
@@ -108,6 +108,12 @@ const SettingsScreen = () => {
               onChange={onChangeDate}
             />
           )}
+          <Button
+            mode='contained'
+            onPress={() => saveSettings()} 
+          >
+            Save Settings
+          </Button>
           <Button title="Save Settings" onPress={saveSettings} />
         </View>
       </TouchableWithoutFeedback> 
