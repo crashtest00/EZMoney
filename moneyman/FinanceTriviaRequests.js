@@ -1,33 +1,21 @@
-import Config from 'react-native-config'; //does not work; `Config' is always blank. 
+import OpenAI from "openai";
+
+const openai = new OpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY });
 
 async function fetchTrivia(prompt) {
-    const apiKey = Config.OPENAI_API_KEY;
-    const apiUrl = 'https://api.openai.com/v1/engines/davinci-codex/completions';
-
-    console.log(Config)
-
+    console.log("getting trivia...");
     try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'text-davinci-003',
-                messages: [{ role: 'user', content: prompt }],
-            }),
+        const completion = await openai.chat.completions.create({
+            messages: [{ role: "system", content: prompt }],
+            model: "gpt-3.5-turbo",
         });
-
-        if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data.choices[0].message.content;
+        
+        const titleAndBody = completion.choices[0].message.content;
+        console.log(titleAndBody);
+        return JSON.parse(titleAndBody); // Return the fetched data
     } catch (error) {
-        console.error('Error fetching chat completion:', error);
-        throw error;
+        console.error('Error handling fetched data:', error);
+        throw error; // Re-throw error for handling elsewhere
     }
 }
 
