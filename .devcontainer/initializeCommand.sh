@@ -1,13 +1,14 @@
 #!/bin/bash
-echo "Gathering you ip for dev container"
+echo "Gathering your ip for hosting metro from within the dev container..."
 
-##############################################################################################
-# en (Ethernet) - ib (InfiniBand) - sl (Serial line IP (slip)) - wl (Wireless local area 
-# network (WLAN)) - ww (Wireless wide area network (WWAN))
-#############################################################################################
-your_interface_name="eno" 
-interface_prefix="en" # Choose the interface network.
-iname=$(ip -o link show | sed -rn '/^[0-9]+: en/{s/.: ([^:]*):.*/\1/p}')
-ip=`ifconfig $iname  | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | sed 's/inet //g'`
+# moves to the directory of the initialize command, allowing it to be run from anywhere
+cd $( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-echo "REACT_NATIVE_PACKAGER_HOSTNAME=$ip" > .devcontainer/.env
+# grabs the first in-use IP address. If this isn't working, check to see if the IP you 
+# want to use is the first one listed in :
+#     $ hostname -i
+# if it's note, simply replace the '1' in 'NR==1' to reflect your IP's position in the
+# output of the 'hostname' command.
+ip=$(hostname -i | tr ' ' '\n' | awk 'NR==1')
+
+echo "REACT_NATIVE_PACKAGER_HOSTNAME=$ip" > $dir/.env
