@@ -1,17 +1,41 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button } from 'react-native-paper';
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AppStyle.js';
-
-// Import other screens
+import TriviaModal from './TriviaModal.js';
+import { fetchTrivia } from './FinanceTriviaRequests.js';
 import Settings from './Settings'; 
-import FinanceTrivia from './FinanceTrivia.js';
+
+
 
 function HomeScreen({ navigation }) {
+
+  // Trivia stuff
+  const [triviaBody, setTriviaBody] = useState("If you're seeing this than the trivia-getting function is quite broken. Sorry!");
+  const [triviaTitle, setTriviaTitle] = useState("getting trivia...");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getTrivia = async () => {
+      try {        
+        const result = await fetchTrivia();
+        setTriviaTitle(result.title); 
+        setTriviaBody(result.body);
+        console.log("sucessfully retrieved trivium")
+      } catch (error) {
+        console.error("Error: ", error)
+        setTriviaTitle("An error occured while fetching trivia");
+      } finally {
+        setLoading(false);
+      }
+    };
+    getTrivia()
+  }, []);
+
   const [totalBudget, setTotalBudget] = useState(0); // Default to 0
   const today = new Date();
   const [billingPeriodStart, setBillingPeriodStart] = useState(today); // Default to today
@@ -25,6 +49,7 @@ function HomeScreen({ navigation }) {
   // Handle Spent Amount
   const [budgetSpentPercentage, setBudgetSpentPercentage] = useState(0); // Initial value
   const [amountSpent, setAmountSpent] = useState('');
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const calculateSpentPercent = () => {
     // Calculate the percentage of the budgent that has been spent in the current billing period
@@ -91,25 +116,29 @@ function HomeScreen({ navigation }) {
           />
           <Button
             mode='contained'
-            labelStyle={{
-              fontSize: 20,
-            }}
-            onPress={() => calculateSpentPercent()} 
+            labelStyle={{ fontSize: 20 }}
+            onPress={calculateSpentPercent} 
             icon="abacus"
           >
             Calculate
           </Button>        
-          <Button // perhaps move this button to the bottom of the home screen to separate it from the actual app content
-            style={{marginTop: 20}} // this style should move elsewhere...
-            mode='contained'
-            labelStyle={{
-              fontSize: 20,
-            }}
-            onPress={() => navigation.navigate('FinanceTrivia')}
-            icon='trending-up'
+        </View>
+        <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
+          <Button
+            style={{ marginTop: 20 }}
+            mode='text'
+            labelStyle={{ fontSize: 20 }}
+            loading={loading}
+            disabled={loading}
+            onPress={() => setModalVisible(true)}
           >
-            Finance trivia
+            {triviaTitle}
           </Button>
+          <TriviaModal
+            isVisible={isModalVisible}
+            onClose={() => setModalVisible(false)}
+            paragraph={triviaBody}
+          />
           <StatusBar style="auto" />
         </View>
       </View>
@@ -126,11 +155,10 @@ function App() {
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Settings" component={Settings} />
-          <Stack.Screen name='FinanceTrivia' component={FinanceTrivia} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
   );
 }
 
-export default App
+export default App;
