@@ -6,14 +6,9 @@ const TriviaModal = ({ isVisible, onClose, paragraph }) => {
   return (
     <Portal>
       <Modal visible={isVisible} onDismiss={onClose} contentContainerStyle={styles.modalContainer}>
-        <IconButton
-          icon="close"
-          size={20}
-          onPress={onClose}
-          style={styles.closeIcon}
-        />
         <Paragraph>{paragraph}</Paragraph>
         <Button
+          style={{ marginTop: 20 }}
           mode='contained'
           onPress={onClose}
         >

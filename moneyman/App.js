@@ -114,12 +114,11 @@ function HomeScreen({ navigation }) {
             mode="outlined"
             onChangeText={text => setAmountSpent(text)}
           />
-          <Button
-            mode='contained'
-            labelStyle={{ fontSize: 20 }}
+          <Button 
+            mode='contained' 
+            labelStyle={{ fontSize: 20 }} 
             onPress={calculateSpentPercent} 
-            icon="abacus"
-          >
+            icon="abacus">
             Calculate
           </Button>        
         </View>
@@ -130,8 +129,7 @@ function HomeScreen({ navigation }) {
             labelStyle={{ fontSize: 20 }}
             loading={loading}
             disabled={loading}
-            onPress={() => setModalVisible(true)}
-          >
+            onPress={() => setModalVisible(true)}>
             {triviaTitle}
           </Button>
           <TriviaModal
