@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Portal, Paragraph, Button, IconButton } from 'react-native-paper';
-import styles from './TriviaModalStyle.js';
+import styles from './ModalStyle.js';
 
 const TriviaModal = ({ isVisible, onClose, paragraph }) => {
   return (

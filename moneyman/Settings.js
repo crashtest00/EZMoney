@@ -1,58 +1,53 @@
-import React, { useState, useEffect } from 'react'; // Ensure useEffect is imported
-import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput, Provider as PaperProvider, IconButton, Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './SettingsStyle.js';
 
+// Function to format date to string
+const formatDate = (date) => {
+  let day = ('0' + date.getDate()).slice(-2);
+  let month = ('0' + (date.getMonth() + 1)).slice(-2);
+  let year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+
 const SettingsScreen = () => {
   const [budgetDefault, setBudgetDefault] = useState('');
   const [currentMonthBudget, setCurrentMonthBudget] = useState('');
   const [billingCycleStartDate, setBillingCycleStartDate] = useState(new Date());
-  const [billingCycleStartDateString, setBillingCycleStartDateString] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Function to format date to string
-  const formatDate = (date) => {
-    let day = ('0' + date.getDate()).slice(-2);
-    let month = ('0' + (date.getMonth() + 1)).slice(-2);
-    let year = date.getFullYear();
-    return `${year}-${month}-${day}`;
-  };
-
-  // Correctly use useEffect for initial setup
   useEffect(() => {
     const loadSettings = async () => {
       try {
         const storedBudgetDefault = await AsyncStorage.getItem('budgetDefault');
         const storedCurrentMonthBudget = await AsyncStorage.getItem('currentMonthBudget');
-        const storedStartDate = await AsyncStorage.getItem('billingCycleStartDate');
+        const storedStartDateString = await AsyncStorage.getItem('billingCycleStartDate');
         if (storedBudgetDefault !== null) setBudgetDefault(storedBudgetDefault);
         if (storedCurrentMonthBudget !== null) setCurrentMonthBudget(storedCurrentMonthBudget);
-        if (storedStartDate !== null) {
-          setBillingCycleStartDateString(storedStartDate);
-          setBillingCycleStartDate(new Date(storedStartDate));
+        if (storedStartDateString !== null) {
+            setBillingCycleStartDate(JSON.parse(storedStartDate));
         }
       } catch (error) {
         console.log(error);
       }
     };
-
-    setBillingCycleStartDateString(formatDate(new Date())); // Ensure this uses a new Date instance
+      
     loadSettings();
   }, []);
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || billingCycleStartDate;
-    setShowDatePicker(false); // Hide the picker
+    setShowDatePicker(false);
     setBillingCycleStartDate(currentDate);
-    setBillingCycleStartDateString(formatDate(currentDate));
   };
 
   const calculateEndDate = (startDate) => {
     const resultDate = new Date(startDate);
     resultDate.setMonth(resultDate.getMonth() + 1);
-    return formatDate(resultDate);
+    return resultDate;
   };
 
   const saveSettings = async () => {
@@ -61,12 +56,11 @@ const SettingsScreen = () => {
     try {
       await AsyncStorage.setItem('budgetDefault', budgetDefault);
       await AsyncStorage.setItem('currentMonthBudget', currentMonthBudget || budgetDefault);
-      await AsyncStorage.setItem('billingCycleStartDate', billingCycleStartDateString);
-      await AsyncStorage.setItem('billingCycleEndDate', billingCycleEndDate); // Save the end date
+      await AsyncStorage.setItem('billingCycleStartDate', JSON.stringify(billingCycleStartDate));
+      await AsyncStorage.setItem('billingCycleEndDate', JSON.stringify(billingCycleEndDate));
       alert('Settings saved!');
     } catch (error) {
-      console.log(error);
-      alert('Failed to save settings.');
+      alert('Failed to save settings: ', error);
     }
   };
 
@@ -91,8 +85,8 @@ const SettingsScreen = () => {
           <View style={styles.datePickerContainer}>
             <TextInput
               label="Cycle Start"
-              value={billingCycleStartDateString}
-              onChangeText={text => setBillingCycleStartDateString(text)}
+              value={formatDate(billingCycleStartDate)}
+              onChangeText={text => setBillingCycleStartDate(new Date(text))}
               style={styles.textInput}
             />
             <IconButton

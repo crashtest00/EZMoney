@@ -7,10 +7,5 @@ export default StyleSheet.create({
       margin: 20,
       borderRadius: 10,
     },
-    closeIcon: {
-      position: 'absolute',
-      right: 0,
-      top: 0,
-    },
 });
   
