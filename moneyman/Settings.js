@@ -76,6 +76,7 @@ const SettingsScreen = () => {
           <View style={styles.datePickerContainer}>
             <TextInput
               label="Cycle Start"
+              editable={false}
               value={formatDate(billingCycleStartDate)}
               onChangeText={text => setBillingCycleStartDate(new Date(text))}
               style={styles.textInput}
