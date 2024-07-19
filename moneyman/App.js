@@ -9,7 +9,7 @@ import styles from './AppStyle.js';
 import TriviaModal from './TriviaModal.js';
 import { fetchTrivia } from './FinanceTriviaRequests.js';
 import Settings from './Settings'; 
-import DateModal from './DateModal.js';
+import SettingsModal from './SettingsModal.js';
 
 function HomeScreen({ navigation }) {
 
@@ -20,74 +20,83 @@ function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [isTriviaModalVisible, setTriviaModalVisible] = useState(false);
 
-  useEffect(() => {
-    const getNewTrivia = async () => {
-      try {        
-        const result = await fetchTrivia();
-        setTriviaTitle(result.title); 
-        setTriviaBody(result.body);
-        setTriviaSummary("tap to read more");
-        console.log("sucessfully received trivium");
-        console.log("storing trivia...");
+  const getNewTrivia = async () => {
+    try {        
+      const result = await fetchTrivia();
+      setTriviaTitle(result.title); 
+      setTriviaBody(result.body);
+      setTriviaSummary("tap to read more");
+      console.log("sucessfully received trivium");
+      console.log("storing trivia...");
+      try {
         await AsyncStorage.setItem('lastTriviaTitle', result.title);
         await AsyncStorage.setItem('lastTriviaBody', result.body);
-        await AsyncStorage.setItem('lastTriviaDate', JSON.stringify(new Date(today)))
+        await AsyncStorage.setItem('lastTriviaDate', JSON.stringify(new Date(today)));
         console.log("trivia stored for later access")
       } catch (error) {
-        console.error("Error: getting data: ", error)
-        setTriviaTitle("An error occured while fetching trivia");
-      } finally {
-        setLoading(false);
+        console.error("Error while trying to store trivia: ", error);
+        console.error("Failed to store trivia");
       }
-    };
-    const getOldTrivia = async () => {
-      setTriviaTitle(await AsyncStorage.getItem('lastTriviaTitle'));
-      setTriviaBody(await AsyncStorage.getItem('lastTriviaBody'));
-      setTriviaSummary("tap to read more");
-      console.log("sucessfully restored old trivia");
-      setLoading(false)
+    } catch (error) {
+      console.error("Error: getting data: ", error)
+      setTriviaTitle("An error occured while fetching trivia");
+    } finally {
+      setLoading(false);
     }
-    const checkAndGetTrivia = async () => {
-      const lastTriviaDateStored = await AsyncStorage.getItem('lastTriviaDate');
-      const todayCalenderDate = new Date(today);
-      todayCalenderDate.setHours(0,0,0,0)
-      // if the trivia bit was stored on or after midnight today, it was stored today
-      if (lastTriviaDateStored !== null && new Date(JSON.parse(lastTriviaDateStored)).valueOf() >= todayCalenderDate.valueOf()) { 
-        console.log("using previously-stored trivia...");
-        getOldTrivia();
-      }
-      else {
-        console.log("fetching new trivia...");
-        getNewTrivia();
-      } 
+  };
+  const getOldTrivia = async () => {
+    const storedTrivaiTitle = await AsyncStorage.getItem('lastTriviaTitle')
+    setTriviaTitle(storedTrivaiTitle);
+    const storedTriviaBody = await AsyncStorage.getItem('lastTriviaBody')
+    setTriviaBody(storedTriviaBody);    
+    setTriviaSummary("tap to read more");
+    console.log("sucessfully restored old trivia");
+    setLoading(false)
+  }
+  const loadTrivia = async () => {
+    const lastTriviaDateStored = await AsyncStorage.getItem('lastTriviaDate');
+    const todayCalenderDate = new Date(today);
+    todayCalenderDate.setHours(0,0,0,0)
+    // if the trivia bit was stored on or after today's midnight, it was stored today
+    if (lastTriviaDateStored !== null && new Date(JSON.parse(lastTriviaDateStored)).valueOf() >= todayCalenderDate.valueOf()) { 
+      console.log("using previously-stored trivia...");
+      getOldTrivia();
     }
-
-    checkAndGetTrivia()
-  }, []);
+    else {
+      console.log("fetching new trivia...");
+      getNewTrivia();
+    } 
+  }
 
   const [totalBudget, setTotalBudget] = useState(0); // Default to 0
   const today = new Date();
   const [billingPeriodStart, setBillingPeriodStart] = useState(today); // Default to today
   const [billingPeriodEnd, setBillingPeriodEnd] = useState(today); // Default to today
   
-  // Now that we have all required data, calculate percentages
-  const billingPeriodLength = (billingPeriodEnd - billingPeriodStart) / (1000 * 60 * 60 * 24);
+  const billingPeriodLength = (billingPeriodEnd - billingPeriodStart) / (1000 * 60 * 60 * 24) || 1;
   const daysElapsed = (today - billingPeriodStart) / (1000 * 60 * 60 * 24);
   const billingPeriodElapsedPercentage = ((daysElapsed / billingPeriodLength) * 100).toFixed(2);
+  const [unsetVariable, setUnsetVariable] = useState("billing period")
   
   // Handle Spent Amount
-  const [budgetSpentPercentage, setBudgetSpentPercentage] = useState(0); // Initial value
+  const [budgetSpentPercentage, setBudgetSpentPercentage] = useState(0);
   const [amountSpent, setAmountSpent] = useState('');
   
 
   const calculateSpentPercent = () => {
-    // Calculate the percentage of the budgent that has been spent in the current billing period
-    // Add logic to handle null
-    const newBudgetSpentPercentage = ((parseFloat(amountSpent) / totalBudget) * 100).toFixed(2);
-    setBudgetSpentPercentage(newBudgetSpentPercentage);
+    if (isNaN(parseInt(amountSpent))) {
+      console.log("no valid amount spent!");
+      alert("Please enter the amount spent this billing period into the provided field")
+    } else if (totalBudget == null || totalBudget == 0) {
+      setUnsetVariable("total budget of the current billing period")
+      setSettingsModalVisible(true)
+    } else {
+      const newBudgetSpentPercentage = ((parseFloat(amountSpent) / totalBudget) * 100).toFixed(2);
+      setBudgetSpentPercentage(newBudgetSpentPercentage);
+    }
   };
 
-  const [dateModalVisible, setDateModalVisible] = useState(false);
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false);
 
   const loadSettings = async () => {
     try {
@@ -101,34 +110,32 @@ function HomeScreen({ navigation }) {
 
       // assumes the billing period's boundaries are always a month apart 
       if (savedBillingPeriodEndString !== null && savedBillingPeriodStartString !== null) {
-        const savedBillingPeriodEnd = new Date(JSON.parse(savedBillingPeriodEndString))
         const savedBillingPeriodStart = new Date(JSON.parse(savedBillingPeriodStartString))
+        const savedBillingPeriodEnd = new Date(JSON.parse(savedBillingPeriodEndString))
         // automatically detect beginning of new billing period and adjust loaded and stored boundaries accordingly
         if (savedBillingPeriodEnd.valueOf() < today.valueOf()) {
-          console.log("current billing period end: ", savedBillingPeriodEnd)
-          // if th
-          savedBillingPeriodEnd.setMonth(savedBillingPeriodEnd.getMonth()+1)
+          // if the billing period happens to start on the thirty first of a month, this will cause issues when incrementing to a thirty-day month
           savedBillingPeriodStart.setMonth(savedBillingPeriodStart.getMonth()+1)
-          setBillingPeriodStart(savedBillingPeriodStart);
+          savedBillingPeriodEnd.setMonth(savedBillingPeriodEnd.getMonth()+1)
           setBillingPeriodEnd(savedBillingPeriodEnd);
-          console.log("incremented billing period end: ", savedBillingPeriodEnd)
+          setBillingPeriodStart(savedBillingPeriodStart);
           try {
             await AsyncStorage.setItem('billingCycleStartDate', JSON.stringify(savedBillingPeriodStart));
             await AsyncStorage.setItem('billingCycleEndDate', JSON.stringify(savedBillingPeriodEnd));
           } catch (error) {
             console.error('Failed to store updated dates in AsyncStorage: ', error);
           }
-          console.log("Previously stored billing cycle incremented by a month")
+          console.log("Previously stored billing cycle incremented by a month");
         }
         else {
-          console.log(savedBillingPeriodEnd.valueOf(), "one")
-          console.log(today.valueOf())
           setBillingPeriodStart(savedBillingPeriodStart);
           setBillingPeriodEnd(savedBillingPeriodEnd);
         }
       }
       else {
-        setDateModalVisible(true);
+        console.log("No billing period data found. This issue should be handled.")
+        setUnsetVariable("billing period");
+        setSettingsModalVisible(true);
       } 
     } catch (error) {
       console.error('Failed to load settings from AsyncStorage:', error);
@@ -136,10 +143,11 @@ function HomeScreen({ navigation }) {
   };
 
   useFocusEffect(
-    useCallback(() => {
+    useCallback(() => {    
       loadSettings();
       setAmountSpent('');
       setBudgetSpentPercentage(0);
+      loadTrivia();
     }, [])
   );
 
@@ -173,20 +181,21 @@ function HomeScreen({ navigation }) {
             icon="abacus">
             Calculate
           </Button>  
-          <DateModal 
-            isVisible={dateModalVisible}
-            onDismiss={() => setDateModalVisible(false)}
+          <SettingsModal 
+            isVisible={settingsModalVisible}
+            unsetVariable={unsetVariable}
+            onDismiss={() => setSettingsModalVisible(false)}
             settingsNavigation={() => {
               navigation.navigate('Settings');
-              setDateModalVisible(false);
+              setSettingsModalVisible(false);
             }}>
-          </DateModal>
+          </SettingsModal>
         </View>
         <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
           <Card style={{width: '80%'}}
             mode='contained'
             disabled={loading}
-            onPress={() => setModalVisible(true)}>
+            onPress={() => setTriviaModalVisible(true)}>
             <Card.Title titleStyle={{ textAlign: 'center' }} title={triviaTitle} />
             <Card.Content>
               <Text style={{ textAlign: 'center' }}>{triviaSummary}</Text>

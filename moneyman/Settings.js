@@ -7,9 +7,11 @@ import styles from './SettingsStyle.js';
 
 // Function to format date to string
 const formatDate = (date) => {
-  let day = ('0' + date.getDate()).slice(-2);
-  let month = ('0' + (date.getMonth() + 1)).slice(-2);
-  let year = date.getFullYear();
+  const dateDate = new Date(date)
+  console.log(date, typeof date)
+  let day = ('0' + dateDate.getDate()).slice(-2);
+  let month = ('0' + (dateDate.getMonth() + 1)).slice(-2);
+  let year = dateDate.getFullYear();
   return `${year}-${month}-${day}`;
 };
 
@@ -24,10 +26,10 @@ const SettingsScreen = () => {
       try {
         const storedBudgetDefault = await AsyncStorage.getItem('budgetDefault');
         const storedCurrentMonthBudget = await AsyncStorage.getItem('currentMonthBudget');
-        const storedStartDateString = await AsyncStorage.getItem('billingCycleStartDate');
+        const storedStartDate = await AsyncStorage.getItem('billingCycleStartDate');
         if (storedBudgetDefault !== null) setBudgetDefault(storedBudgetDefault);
         if (storedCurrentMonthBudget !== null) setCurrentMonthBudget(storedCurrentMonthBudget);
-        if (storedStartDateString !== null) {
+        if (storedStartDate !== null) {
             setBillingCycleStartDate(JSON.parse(storedStartDate));
         }
       } catch (error) {
@@ -39,7 +41,7 @@ const SettingsScreen = () => {
   }, []);
 
   const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate || billingCycleStartDate;
+    const currentDate = new Date(selectedDate) || billingCycleStartDate;
     setShowDatePicker(false);
     setBillingCycleStartDate(currentDate);
   };
