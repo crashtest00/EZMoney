@@ -76,7 +76,7 @@ const SettingsScreen = () => {
         <View style={styles.container}>
           <TextInput
             label="Budget Default"
-            value={budgetDefault}
+            value={budg  etDefault}
             onChangeText={setBudgetDefault}
             keyboardType="numeric"
             style={styles.textInput}
@@ -100,7 +100,7 @@ const SettingsScreen = () => {
               onPress={() => setShowDatePicker(true)}
             />
           </View>
-        {showDatPicker && (
+        {showDatePicker && (
             <DateTimePicker
               value={billingCycleStartDate}
               mode="date"
