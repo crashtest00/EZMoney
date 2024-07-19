@@ -20,6 +20,11 @@ const SettingsScreen = () => {
   const [billingCycleStartDate, setBillingCycleStartDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  const today = new Date();
+  const lastMonth = new Date();
+  lastMonth.setMonth(lastMonth.getMonth()-1)
+  lastMonth.setDay(lastMonth.getDate()+1)
+
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -92,6 +97,8 @@ const SettingsScreen = () => {
               mode="date"
               display="default"
               onChange={onChangeDate}
+              maximumDate={today}
+              minimumDate={lastMonth}
             />
           )}
           <Button
