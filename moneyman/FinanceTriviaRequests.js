@@ -1,10 +1,6 @@
 import OpenAI from "openai";
 
-<<<<<<< HEAD
-const openai = new OpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY , dangerouslyAllowBrowser: true });
-=======
 const openai = new OpenAI({ apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
->>>>>>> 804ddd3 (Began work on improved cycle-date UX)
 
 async function fetchTrivia() {
 

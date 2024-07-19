@@ -3,11 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-<<<<<<< HEAD
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal, Text } from 'react-native-paper';
-=======
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal, Portal } from 'react-native-paper';
->>>>>>> 804ddd3 (Began work on improved cycle-date UX)
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal, Portal, Text } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AppStyle.js';
 import TriviaModal from './TriviaModal.js';
@@ -44,7 +40,6 @@ function HomeScreen({ navigation }) {
         setLoading(false);
       }
     };
-<<<<<<< HEAD
     const getOldTrivia = async () => {
       setTriviaTitle(await AsyncStorage.getItem('lastTriviaTitle'));
       setTriviaBody(await AsyncStorage.getItem('lastTriviaBody'));
@@ -68,9 +63,6 @@ function HomeScreen({ navigation }) {
     }
 
     checkAndGetTrivia()
-=======
-    getTrivia() 
->>>>>>> 804ddd3 (Began work on improved cycle-date UX)
   }, []);
 
   const [totalBudget, setTotalBudget] = useState(0); // Default to 0
@@ -114,6 +106,7 @@ function HomeScreen({ navigation }) {
         // automatically detect beginning of new billing period and adjust loaded and stored boundaries accordingly
         if (savedBillingPeriodEnd.valueOf() < today.valueOf()) {
           console.log("current billing period end: ", savedBillingPeriodEnd)
+          // if th
           savedBillingPeriodEnd.setMonth(savedBillingPeriodEnd.getMonth()+1)
           savedBillingPeriodStart.setMonth(savedBillingPeriodStart.getMonth()+1)
           setBillingPeriodStart(savedBillingPeriodStart);
@@ -193,18 +186,12 @@ function HomeScreen({ navigation }) {
           <Card style={{width: '80%'}}
             mode='contained'
             disabled={loading}
-<<<<<<< HEAD
             onPress={() => setModalVisible(true)}>
             <Card.Title titleStyle={{ textAlign: 'center' }} title={triviaTitle} />
             <Card.Content>
               <Text style={{ textAlign: 'center' }}>{triviaSummary}</Text>
             </Card.Content>
           </Card>
-=======
-            onPress={() => setTriviaModalVisible(true)}>
-            {triviaTitle}
-          </Button>
->>>>>>> 804ddd3 (Began work on improved cycle-date UX)
           <TriviaModal
             isVisible={isTriviaModalVisible}
             onClose={() => setTriviaModalVisible(false)}
