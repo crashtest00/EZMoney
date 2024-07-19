@@ -16,7 +16,6 @@ const formatDate = (date) => {
 };
 
 const SettingsScreen = () => {
-  const [budgetDefault, setBudgetDefault] = useState('');
   const [currentMonthBudget, setCurrentMonthBudget] = useState('');
   const [billingCycleStartDate, setBillingCycleStartDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -24,10 +23,8 @@ const SettingsScreen = () => {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const storedBudgetDefault = await AsyncStorage.getItem('budgetDefault');
         const storedCurrentMonthBudget = await AsyncStorage.getItem('currentMonthBudget');
         const storedStartDate = await AsyncStorage.getItem('billingCycleStartDate');
-        if (storedBudgetDefault !== null) setBudgetDefault(storedBudgetDefault);
         if (storedCurrentMonthBudget !== null) setCurrentMonthBudget(storedCurrentMonthBudget);
         if (storedStartDate !== null) {
             setBillingCycleStartDate(JSON.parse(storedStartDate));
@@ -56,8 +53,7 @@ const SettingsScreen = () => {
     const billingCycleEndDate = calculateEndDate(billingCycleStartDate);
     
     try {
-      await AsyncStorage.setItem('budgetDefault', budgetDefault);
-      await AsyncStorage.setItem('currentMonthBudget', currentMonthBudget || budgetDefault);
+      await AsyncStorage.setItem('currentMonthBudget', currentMonthBudget);
       await AsyncStorage.setItem('billingCycleStartDate', JSON.stringify(billingCycleStartDate));
       await AsyncStorage.setItem('billingCycleEndDate', JSON.stringify(billingCycleEndDate));
       alert('Settings saved!');
@@ -71,14 +67,7 @@ const SettingsScreen = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
           <TextInput
-            label="Budget Default"
-            value={budgetDefault}
-            onChangeText={setBudgetDefault}
-            keyboardType="numeric"
-            style={styles.textInput}
-          />
-          <TextInput
-            label="Current Month Budget"
+            label="Monthly Budget"
             value={currentMonthBudget}
             onChangeText={setCurrentMonthBudget}
             keyboardType="numeric"
@@ -98,7 +87,7 @@ const SettingsScreen = () => {
           </View>
         {showDatePicker && (
             <DateTimePicker
-              value={billingCycleStartDate}
+              value={new Date(billingCycleStartDate)}
               mode="date"
               display="default"
               onChange={onChangeDate}
