@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal } from 'react-native-paper';
+import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal, Text } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AppStyle.js';
 import TriviaModal from './TriviaModal.js';
@@ -17,6 +17,7 @@ function HomeScreen({ navigation }) {
   // Trivia stuff
   const [triviaBody, setTriviaBody] = useState("If you're seeing this than the trivia-getting function is quite broken. Sorry!");
   const [triviaTitle, setTriviaTitle] = useState("getting trivia...");
+  const [triviaSummary, setTriviaSummary] = useState("loading...")
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,6 +26,7 @@ function HomeScreen({ navigation }) {
         const result = await fetchTrivia();
         setTriviaTitle(result.title); 
         setTriviaBody(result.body);
+        setTriviaSummary("tap to read more");
         console.log("sucessfully retrieved trivium")
       } catch (error) {
         console.error("Error: ", error)
@@ -123,15 +125,15 @@ function HomeScreen({ navigation }) {
           </Button>        
         </View>
         <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
-          <Button
-            style={{ marginTop: 20 }}
-            mode='text'
-            labelStyle={{ fontSize: 20 }}
-            loading={loading}
+          <Card
+            mode='contained'
             disabled={loading}
             onPress={() => setModalVisible(true)}>
-            {triviaTitle}
-          </Button>
+            <Card.Title titleStyle={{ textAlign: 'center' }} title={triviaTitle} />
+            <Card.Content>
+              <Text style={{ textAlign: 'center' }}>{triviaSummary}</Text>
+            </Card.Content>
+          </Card>
           <TriviaModal
             isVisible={isModalVisible}
             onClose={() => setModalVisible(false)}
