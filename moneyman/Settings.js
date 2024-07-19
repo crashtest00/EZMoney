@@ -100,7 +100,7 @@ const SettingsScreen = () => {
               onPress={() => setShowDatePicker(true)}
             />
           </View>
-          {showDatePicker && (
+        {showDatPicker && (
             <DateTimePicker
               value={billingCycleStartDate}
               mode="date"
