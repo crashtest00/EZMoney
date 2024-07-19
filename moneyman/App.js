@@ -10,8 +10,6 @@ import TriviaModal from './TriviaModal.js';
 import { fetchTrivia } from './FinanceTriviaRequests.js';
 import Settings from './Settings'; 
 
-
-
 function HomeScreen({ navigation }) {
 
   // Trivia stuff
@@ -21,13 +19,18 @@ function HomeScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getTrivia = async () => {
+    const getNewTrivia = async () => {
       try {        
         const result = await fetchTrivia();
         setTriviaTitle(result.title); 
         setTriviaBody(result.body);
         setTriviaSummary("tap to read more");
-        console.log("sucessfully retrieved trivium")
+        console.log("sucessfully received trivium");
+        console.log("storing trivia...");
+        await AsyncStorage.setItem('lastTriviaTitle', result.title);
+        await AsyncStorage.setItem('lastTriviaBody', result.body);
+        await AsyncStorage.setItem('lastTriviaDate', JSON.stringify(new Date(today)))
+        console.log("trivia stored for later access")
       } catch (error) {
         console.error("Error: ", error)
         setTriviaTitle("An error occured while fetching trivia");
@@ -35,7 +38,29 @@ function HomeScreen({ navigation }) {
         setLoading(false);
       }
     };
-    getTrivia()
+    const getOldTrivia = async () => {
+      setTriviaTitle(await AsyncStorage.getItem('lastTriviaTitle'));
+      setTriviaBody(await AsyncStorage.getItem('lastTriviaBody'));
+      setTriviaSummary("tap to read more");
+      console.log("sucessfully restored old trivia");
+      setLoading(false)
+    }
+    const checkAndGetTrivia = async () => {
+      const lastTriviaDateStored = await AsyncStorage.getItem('lastTriviaDate');
+      const todayCalenderDate = new Date(today);
+      todayCalenderDate.setHours(0,0,0,0)
+      // if the trivia bit was stored on or after midnight today, it was stored today
+      if (lastTriviaDateStored !== null && new Date(JSON.parse(lastTriviaDateStored)).valueOf() >= todayCalenderDate.valueOf()) { 
+        console.log("using previously-stored trivia...");
+        getOldTrivia();
+      }
+      else {
+        console.log("fetching new trivia...");
+        getNewTrivia();
+      } 
+    }
+
+    checkAndGetTrivia()
   }, []);
 
   const [totalBudget, setTotalBudget] = useState(0); // Default to 0
@@ -125,7 +150,7 @@ function HomeScreen({ navigation }) {
           </Button>        
         </View>
         <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
-          <Card
+          <Card style={{width: '80%'}}
             mode='contained'
             disabled={loading}
             onPress={() => setModalVisible(true)}>
