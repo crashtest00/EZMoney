@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal, Portal, Text } from 'react-native-paper';
@@ -191,7 +191,7 @@ function HomeScreen({ navigation }) {
             }}>
           </SettingsModal>
         </View>
-        <View style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
+        <KeyboardAvoidingView style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
           <Card style={{width: '80%'}}
             mode='contained'
             disabled={loading}
@@ -207,7 +207,7 @@ function HomeScreen({ navigation }) {
             paragraph={triviaBody}
           />
           <StatusBar style="auto" />
-        </View>
+        </KeyboardAvoidingView>
       </View>
     </TouchableWithoutFeedback>
   );

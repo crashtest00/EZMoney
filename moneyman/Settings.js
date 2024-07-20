@@ -23,7 +23,7 @@ const SettingsScreen = () => {
   const today = new Date();
   const lastMonth = new Date();
   lastMonth.setMonth(lastMonth.getMonth()-1)
-  lastMonth.setDay(lastMonth.getDate()+1)
+  lastMonth.setDate(lastMonth.getDate()+1)
 
   useEffect(() => {
     const loadSettings = async () => {
