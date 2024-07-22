@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { View, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView } from 'react-native';
+import { View, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import { NavigationContainer, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Appbar, Provider as PaperProvider, Card, Paragraph, TextInput, Button, Modal, Portal, Text } from 'react-native-paper';
@@ -189,25 +189,24 @@ function HomeScreen({ navigation }) {
               navigation.navigate('Settings');
               setSettingsModalVisible(false);
             }}>
-          </SettingsModal>
-        </View>
-        <KeyboardAvoidingView style={{ position: 'absolute', bottom: 20, width: '100%', alignItems: 'center' }}>
-          <Card style={{width: '80%'}}
-            mode='contained'
-            disabled={loading}
-            onPress={() => setTriviaModalVisible(true)}>
-            <Card.Title titleStyle={{ textAlign: 'center' }} title={triviaTitle} />
-            <Card.Content>
-              <Text style={{ textAlign: 'center' }}>{triviaSummary}</Text>
-            </Card.Content>
-          </Card>
-          <TriviaModal
-            isVisible={isTriviaModalVisible}
-            onClose={() => setTriviaModalVisible(false)}
-            paragraph={triviaBody}
-          />
-          <StatusBar style="auto" />
-        </KeyboardAvoidingView>
+          </SettingsModal>        
+          <KeyboardAvoidingView style={{width: '100%', alignItems: 'center'}}>
+            <Card style={{width: '80%', bottom: '-90%'}} 
+              mode='elevated'
+              disabled={loading}
+              onPress={() => setTriviaModalVisible(true)}>
+              <Card.Title titleStyle={{ textAlign: 'center' }} title={triviaTitle} />
+              <Card.Content>
+                <Text style={{ textAlign: 'center' }}>{triviaSummary}</Text>
+              </Card.Content>
+            </Card>
+            <TriviaModal
+              isVisible={isTriviaModalVisible}
+              onClose={() => setTriviaModalVisible(false)}
+              paragraph={triviaBody}
+            />
+          </KeyboardAvoidingView>
+          </View>
       </View>
     </TouchableWithoutFeedback>
   );

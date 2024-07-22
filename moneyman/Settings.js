@@ -22,8 +22,8 @@ const SettingsScreen = () => {
 
   const today = new Date();
   const lastMonth = new Date();
-  lastMonth.setMonth(lastMonth.getMonth()-1)
-  lastMonth.setDate(lastMonth.getDate()+1)
+  lastMonth.setMonth(lastMonth.getMonth()-1);
+  lastMonth.setDate(lastMonth.getDate()+1);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -51,6 +51,7 @@ const SettingsScreen = () => {
   const calculateEndDate = (startDate) => {
     const resultDate = new Date(startDate);
     resultDate.setMonth(resultDate.getMonth() + 1);
+    resultDate.setDate(resultDate.getDate()-1);
     return resultDate;
   };
 
